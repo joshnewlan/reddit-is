@@ -7,12 +7,12 @@ r.login('USERNAME', 'PASSWORD')
 comments = praw.helpers.comment_stream(r, 'all', limit=None)
 
 for comment in comments:
-    p = re.compile(ur'(reddit\s+(is|isnt|isn\'t|was|wasnt|wasn\'t|does|didnt|didn\'t|says|said|has|hasnt|hasn\'t|can|cannot|cant|can\'t|will|wont|won\'t|likes|dislikes|hates|loves|thinks|hopes|acts|wishes|gets|wants|needs|fears|worships|finds|pretends)\b)', re.IGNORECASE)
+    p = re.compile(ur'(reddit\s+(is|isnt|isn\'t|was|wasnt|wasn\'t|does|didnt|didn\'t|says|said|has|hasnt|hasn\'t|can|cannot|cant|can\'t|will|wont|won\'t|likes|dislikes|hates|loves|thinks|hopes|acts|wishes|gets|wants|needs|fears|worships|finds|pretends|compares)\b)', re.IGNORECASE)
     #tis = re.findall(p, comment.body)
     tis = re.match(p, comment.body)
     if tis is not None:
         body = comment.body.rstrip('\n')
-        with open('/Users/user/test.txt','a') as f:
+        with open('/Users/josh/desktop/test.txt','a') as f:
             comment_id = str(comment.id)
             subreddit = str(comment.subreddit)
             author = str(comment.author)
