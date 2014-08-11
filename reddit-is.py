@@ -12,7 +12,7 @@ for comment in comments:
     tis = re.match(p, comment.body)
     if tis is not None:
         body = comment.body.rstrip('\n')
-        with open('/Users/josh/desktop/test.txt','a') as f:
+        with open('test.txt','a') as f:
             comment_id = str(comment.id)
             subreddit = str(comment.subreddit)
             author = str(comment.author)
