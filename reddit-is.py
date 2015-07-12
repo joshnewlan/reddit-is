@@ -33,12 +33,12 @@ while True:
                                 does|didnt|didn\'t|goes|makes|gets|
                                 will|wont|won\'t|
                                 says|said|pontificates|
-                                has|hasnt|hasn\'t|
+                                has|hasnt|hasn\'t|holds|
                                 can|cannot|cant|can\'t|
                                 likes|dislikes|hates|loves|
-                                thinks|hopes|acts|wishes|wants|needs|
+                                thinks|hopes|acts|wishes|wants|needs|damands|
                                 fears|freaks|worships|finds|pretends|compares|
-                                spazzes|denies|sings)\b)""", re.IGNORECASE)
+                                spazzes|denies|sings|cares|defines)\b)""", re.IGNORECASE)
             tis = re.match(p, comment.body)
             
             if tis is not None:
