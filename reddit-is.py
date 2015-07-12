@@ -8,35 +8,27 @@ REDIRECT_URI = ""
 REFRESH_TOKEN = ""
 USERNAME = ""
 
-r = praw.Reddit('Reddit is /u/{}'.format(USERNAME))
-r.set_oauth_app_info(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
-
-print "Authenticating"
-access_information = r.refresh_access_information(REFRESH_TOKEN)
-r.set_access_credentials(**access_information)
-authenticated_user = r.get_me()
-print "Authenticated as {}".format(authenticated_user.name)
+def authenticate():
+    print "Authenticating"
+    r = praw.Reddit('Reddit is by /u/{}'.format(USERNAME))
+    r.set_oauth_app_info(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+    access_information = r.refresh_access_information(REFRESH_TOKEN)
+    r.set_access_credentials(**access_information)
+    # authenticated_user = r.get_me()
+    # print "Authenticated as {}".format(authenticated_user.name)
     
 # TODO: Check authenticated_user.link_karma > 1
+
 try:
     while True:
         try:
             comments = praw.helpers.comment_stream(r, 'all', limit=None,verbosity=3)
-        except (ConnectionError, ReadTimeout):
-            print "Connection Error, waiting..."
-            time.wait(10)
-            print "Retrying..."
-            pass
-        except OAuthInvalidToken:
-            r.set_oauth_app_info(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI)
+        except (ConnectionError, ReadTimeout, OAuthInvalidToken , IOError) as e:
+            print "{}, waiting...".format(e.strerror)
+            time.wait(6)
+            authenticate()
 
-            print "Re-authenticating"
-            access_information = r.refresh_access_information(REFRESH_TOKEN)
-            r.set_access_credentials(**access_information)
-            authenticated_user = r.get_me()
-            print "Authenticated as {}".format(authenticated_user.name)
-            pass
-
+            continue
 
         for comment in comments:
             p = re.compile(ur"""(reddit\s+(is|isnt|isn\'t|
