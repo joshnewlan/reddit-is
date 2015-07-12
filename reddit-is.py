@@ -1,6 +1,7 @@
 import praw
 import re
 import time
+from requests.exceptions import ConnectionError, ReadTimeout
 
 CLIENT_ID = ""
 CLIENT_SECRET = ""
@@ -16,18 +17,21 @@ def authenticate():
     r.set_access_credentials(**access_information)
     # authenticated_user = r.get_me()
     # print "Authenticated as {}".format(authenticated_user.name)
+    return r
     
 # TODO: Check authenticated_user.link_karma > 1
-
+r = authenticate()
 try:
     while True:
         try:
             comments = praw.helpers.comment_stream(r, 'all', limit=None,verbosity=3)
-        except (ConnectionError, ReadTimeout, OAuthInvalidToken , IOError) as e:
+        except (ConnectionError, 
+                ReadTimeout, 
+                praw.errors.OAuthInvalidToken, 
+                IOError) as e:
             print "{}, waiting...".format(e.strerror)
             time.wait(6)
-            authenticate()
-
+            r = authenticate()
             continue
 
         for comment in comments:
