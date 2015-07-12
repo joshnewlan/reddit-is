@@ -48,7 +48,6 @@ try:
                                     spazzes|denies|sings)\b)""", re.IGNORECASE)
             tis = re.match(p, comment.body)
             if tis is not None:
-                body = comment.body.rstrip('\n')
                 with open('reddit-is.csv','a') as f:
                     comment_id = str(comment.id)
                     subreddit = str(comment.subreddit)
@@ -57,6 +56,7 @@ try:
                     score = str(comment.score)
                     created_utc = str(comment.created_utc)
                     controversiality = str(comment.controversiality)
+                    body = comment.body.rstrip('\n')
 
                     f.write(comment_id + ",")
                     f.write(subreddit + ",")
