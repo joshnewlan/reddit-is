@@ -3,6 +3,7 @@ import re
 import time
 from requests.exceptions import ConnectionError, ReadTimeout
 
+# Authenticate with Oauth2 for these
 CLIENT_ID = ""
 CLIENT_SECRET = ""
 REDIRECT_URI = ""
@@ -21,32 +22,25 @@ def authenticate():
     
 # TODO: Check authenticated_user.link_karma > 1
 r = authenticate()
-try:
-    while True:
-        try:
-            comments = praw.helpers.comment_stream(r, 'all', limit=None,verbosity=3)
-        except (ConnectionError, 
-                ReadTimeout, 
-                praw.errors.OAuthInvalidToken, 
-                IOError) as e:
-            print "{}, waiting...".format(e.strerror)
-            time.wait(6)
-            r = authenticate()
-            continue
 
+while True:
+    try:
+        comments = praw.helpers.comment_stream(r, 'all', limit=None,verbosity=3)
         for comment in comments:
-            p = re.compile(ur"""(reddit\s+(is|isnt|isn\'t|
-                                    was|wasnt|wasn\'t|werent|weren\'t|
-                                    does|didnt|didn\'t|goes|makes|gets|
-                                    will|wont|won\'t|
-                                    says|said|pontificates|
-                                    has|hasnt|hasn\'t|
-                                    can|cannot|cant|can\'t|
-                                    likes|dislikes|hates|loves|
-                                    thinks|hopes|acts|wishes|wants|needs|
-                                    fears|freaks|worships|finds|pretends|compares|
-                                    spazzes|denies|sings)\b)""", re.IGNORECASE)
+            p = re.compile(ur"""(reddit\s+(
+                                is|isnt|isn\'t|
+                                was|wasnt|wasn\'t|werent|weren\'t|
+                                does|didnt|didn\'t|goes|makes|gets|
+                                will|wont|won\'t|
+                                says|said|pontificates|
+                                has|hasnt|hasn\'t|
+                                can|cannot|cant|can\'t|
+                                likes|dislikes|hates|loves|
+                                thinks|hopes|acts|wishes|wants|needs|
+                                fears|freaks|worships|finds|pretends|compares|
+                                spazzes|denies|sings)\b)""", re.IGNORECASE)
             tis = re.match(p, comment.body)
+            
             if tis is not None:
                 with open('reddit-is.csv','a') as f:
                     comment_id = str(comment.id)
@@ -68,6 +62,13 @@ try:
                 print comment.body
             else:
                 continue
-except KeyboardInterrupt:
-    pass
 
+    except (ConnectionError, 
+            ReadTimeout, 
+            praw.errors.OAuthInvalidToken, 
+            IOError) as e:
+        print "{}, waiting...".format(e.strerror)
+        time.wait(6)
+        r = authenticate()
+
+        continue
