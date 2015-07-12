@@ -68,7 +68,7 @@ while True:
             praw.errors.OAuthInvalidToken, 
             IOError) as e:
         print "{}, waiting...".format(e.strerror)
-        time.wait(6)
+        time.sleep(5)
         r = authenticate()
 
         continue
